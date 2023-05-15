@@ -40,6 +40,32 @@ def return_code(name):
     # print(bin_dict_of_code)
     return dict_of_code,bin_dict_of_code
 
+def return_variableloc(name):
+    f=open("{}".format(name),"r")
+    x=list(return_code(name)[0].values())
+    # print(x)
+    vars_dict={}
+    vars_list=[]
+    labels_dict={}
+    len_code=len(x)
+    count=0 #counting how many variables are there
+    for i in range(len(x)):
+        if(x[i][0]=="var"):
+            vars_list.append(x[i])
+            count+=1
+    only_program=len_code-count
+    # print(only_program)
+    for i in range(len(x)-only_program,len(x)):
+        # print(x[i],i-count)
+        if(":" in x[i][0]):
+            labels_dict[binary(i-count)]=x[i][0]
+
+    for i in range(len(vars_list)):
+        vars_dict[binary(only_program+i)]=x[i][1]
+    # print(vars_dict)
+    # print(labels_dict)
+    return vars_dict,labels_dict
+
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
