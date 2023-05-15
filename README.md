@@ -20,3 +20,4 @@ The assembler reads assembly program as an input text file and generates the bin
 In case of any error, the error is generated with the line number in which error has been encountered.
 
 Add the path of the test case in the textfile list for getting the require "output.txt" files.
+We have added some sample test cases to test the functioning of the code.

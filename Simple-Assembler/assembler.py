@@ -770,11 +770,14 @@ def main():
     INSTRUCTIONS= ['add','sub','mul','xor','or','and','rs','ls','mov','div','not','cmp','ld','st','jmp','jlt','jgt','je','hlt','var']
     REGISTERS={"R0":"000","R1":"001","R2":"010","R3":"011","R4":"100","R5":"101","R6":"110","FLAGS":"111"}
 
-    testcases=[r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase1.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase2.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase3.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase4.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase5.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase6.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase7.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase8.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase9.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase10.txt"
+    testcases=[r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase1.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase2.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase3.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase4.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase5.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase6.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase7.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase8.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase9.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase10.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase11.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase12.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase13.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase14.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase15.txt"
     ]
     
     for k in range(len(testcases)):
