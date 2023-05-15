@@ -537,6 +537,82 @@ def errorgen(name,k):
         
     # print(lst_C)
 
+    #TYPE-D ERROR GENERATION
+    lst_D=[]
+    for i,j in pcode.items():
+        try:
+            if j[0] in labels.values():
+                if j[1] in TYPE_D:
+                    if len(j)!=4:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-D instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-D instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if "FLAGS" in j:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.close()
+                        return True    
+                    if j[2] not in REGISTERS:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal register name for Type-D instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal register name for Type-D instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if (j[3]+":" in labels.values()):
+                        # print("ERROR: FILE: {}\n<line {}>: Labels cannot be used as variables.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Labels cannot be used as variables.".format(name,i))
+                        f1.close()
+                        return True
+                    if j[3].isdigit()==True:
+                        # print("ERROR: FILE: {}\n<line {}>: Numerical value cannot be interpreted as a variable.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Numerical value cannot be interpreted as a variable.".format(name,i))
+                        f1.close()
+                        return True
+                    if j[3] not in variables:
+                        # print("ERROR: FILE: {}\n<line {}>: Use of undefined variable.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Use of undefined variable.".format(name,i))
+                        f1.close()
+                        return True
+                    lst_D.append(j)
+                
+            if j[0] in TYPE_D:
+                if len(j)!=3:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-D instruction.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-D instruction.".format(name,i))
+                    f1.close()
+                    return True
+                if "FLAGS" in j:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                    f1.close()
+                    return True    
+                if j[1] not in REGISTERS:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal register name for Type-D instruction.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal register name for Type-D instruction.".format(name,i))
+                    f1.close()
+                    return True
+                if (j[2]+":" in labels.values()):
+                    # print("ERROR: FILE: {}\n<line {}>: Labels cannot be used as variables.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Labels cannot be used as variables.".format(name,i))
+                    f1.close()
+                    return True
+                if j[2].isdigit()==True:
+                    # print("ERROR: FILE: {}\n<line {}>: Numerical value cannot be interpreted as a variable.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Numerical value cannot be interpreted as a variable.".format(name,i))
+                    f1.close()
+                    return True
+                if j[2] not in variables:
+                    # print("ERROR: FILE: {}\n<line {}>: Use of undefined variable.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Use of undefined variable.".format(name,i))
+                    f1.close()
+                    return True
+                lst_D.append(j)
+        
+        except:
+            continue
+
+    # print(lst_D)
+
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
