@@ -92,5 +92,37 @@ def main():
     INSTRUCTIONS= ['add','sub','mul','xor','or','and','rs','ls','mov','div','not','cmp','ld','st','jmp','jlt','jgt','je','hlt','var']
     REGISTERS={"R0":"000","R1":"001","R2":"010","R3":"011","R4":"100","R5":"101","R6":"110","FLAGS":"111"}
 
+    testcases=[r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase1.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase2.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase3.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase4.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase5.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase6.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase7.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase8.txt",
+    r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase9.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\CO-B29\testcase10.txt"
+    ]
+    
+    for k in range(len(testcases)):
+        f1=open("output{}.txt".format(k+1),"w")
+        f1.close()
+        y=errorgen(testcases[k],k+1)
+        if(y==False):
+            program_code={}    # line and code
+            binary_code={}  #binary
+            variables_locations={} # memory for variables
+            labels_locations={} #labels
+            type_A=[]
+            type_B=[]
+            type_C=[]
+            type_D=[]
+            type_E=[]
+            type_F=[]
+            program_code,binary_code=return_code(testcases[k])
+            variables_locations,labels_locations=return_variableloc(testcases[k])
+            # print(program_code)
+            # # print()
+            # print(binary_code)
+            # # # print()
+            # print(variables_locations)
+            # print(labels_locations)     
+            # print(k,y)
+            
 main()
 
