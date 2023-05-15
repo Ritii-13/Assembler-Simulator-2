@@ -662,6 +662,18 @@ def errorgen(name,k):
 
     return False
 
+
+def A(i,j):
+    f=open("output{}.txt".format(j),"a")
+    unused="00"
+    if(i[0] in list(labels_locations.values())):
+        s=(TYPE_A[i[1]]+unused+REGISTERS[i[2]]+REGISTERS[i[3]]+REGISTERS[i[4]])
+    else:
+        s=(TYPE_A[i[0]]+unused+REGISTERS[i[1]]+REGISTERS[i[2]]+REGISTERS[i[3]])
+    # print(s)
+    f.write(s+"\n")
+    f.close()
+
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
