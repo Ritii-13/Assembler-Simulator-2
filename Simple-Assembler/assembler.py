@@ -743,6 +743,7 @@ def F(i,j):
     f.write(s+"\n")
     f.close()
 
+
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
@@ -800,6 +801,40 @@ def main():
             # print(variables_locations)
             # print(labels_locations)     
             # print(k,y)
+            for i in list(binary_code.values()):
+                # print(i)
+                try:
+                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_A and i[2] in REGISTERS and i[3] in REGISTERS and i[4] in REGISTERS and len(i)==5) or (i[0] in TYPE_A and i[1] in REGISTERS and i[2] in REGISTERS and i[3] in REGISTERS and len(i)==4)):
+                        type_A.append(i)
+                except:
+                    pass
+                try:
+                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_C and i[2] in REGISTERS and i[3] in REGISTERS and len(i)==4 )or (i[0] in TYPE_C and i[1] in REGISTERS and i[2] in REGISTERS and len(i)==3)):
+                        type_C.append(i)
+                except:
+                    pass
+                # print(i[0] in list(labels_locations.values()))
+                try:
+                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_F.keys()) or i[0] in TYPE_F or i[-1]=="hlt"):
+                        type_F.append(i)
+                except:
+                    pass
+                try:
+                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_D and i[2] in REGISTERS and (i[3] in list(variables_locations.values()) or i[3]+":" in list(labels_locations.values()))) and len(i)==4) or (i[0] in TYPE_D and i[1] in REGISTERS and (i[2]+":" in list(labels_locations.values()) or i[2] in list(variables_locations.values()))):
+                        type_D.append(i)
+                except:
+                    pass
+                try:
+                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_B and "$" in i[-1] and i[2] in REGISTERS)or (i[0] in TYPE_B and  i[1] in REGISTERS and "$" in i[-1])):
+                        type_B.append(i)
+                except:
+                    pass
+                try:
+                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_E and (i[2]+":" in list(labels_locations.values()) or i[2] in list(variables_locations.values() ))) or (i[0] in TYPE_E and (i[1]+":" in list(labels_locations.values()) or i[1] in list(variables_locations.values())))):
+                        type_E.append(i)
+                except:
+                    pass
+
             
 main()
 
