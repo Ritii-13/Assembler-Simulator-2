@@ -4,7 +4,9 @@
 #### RITIKA THAKUR - 2022408
 #### MUTHURAJ VAIRAMUTHU - 2022307
 
-Project description
+Computer Organization - CSE112 Winter semester 2023 Project
+
+Project Guidlines:
 
 This project consists of 4 parts
 1. Designing and Implementing the assembler.
