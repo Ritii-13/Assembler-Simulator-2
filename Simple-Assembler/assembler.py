@@ -835,6 +835,13 @@ def main():
                 except:
                     pass
 
+        # print(type_A)
+            # print(type_B)
+            # print(type_C)
+            # print(type_D)
+            # print(type_E)
+            # print(type_F)
+
             
 main()
 
