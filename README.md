@@ -19,4 +19,4 @@ The assembler.py file consists of the code for the assembler.
 The assembler reads assembly program as an input text file and generates the binary as an output text file. 
 In case of any error, the error is generated with the line number in which error has been encountered.
 
-Add the path of the test case in the textfile list for input.
+Add the path of the test case in the textfile list for getting the require "output.txt" files.
