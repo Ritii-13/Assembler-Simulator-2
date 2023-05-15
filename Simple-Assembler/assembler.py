@@ -66,6 +66,237 @@ def return_variableloc(name):
     # print(labels_dict)
     return vars_dict,labels_dict
 
+
+def errorgen(name,k):
+    f1=open("output{}.txt".format(k),"a")
+    pcode={}
+    errcode={}
+    fullcode={}
+    f=open("{}".format(name),"r")
+    x=f.read().split("\n")
+    for i in range(len(x)):
+        x[i]=x[i].strip()
+    z=x.copy()
+    # print(z)
+    for i in range(len(z)):
+        z[i]=z[i].split()
+    # print(z)
+    m=len(z)-1
+    while(z[m]==[]):
+        z.pop()
+        m-=1
+    # print(z)
+    for i in range(len(z)):
+        if(z[i]==[]):
+            continue
+        pcode[i+1]=z[i]
+    # print(pcode)
+    # y=x.copy()
+    # for i in range(len(y)):
+    #     if(y[i]==""):
+    #         x.remove("")
+    # for i in range(len(x)):
+    #     x[i]=x[i].split()
+    # # print(x)
+    # for i in range(len(x)):
+    #     pcode[i+1]=x[i]
+    # print(pcode)
+    lst_lines=list(pcode.keys())
+    lst_code=list(pcode.values())
+    # print(lst_lines,"\n",lst_code)
+    if(len(lst_code)>128):
+        # print("ERROR: FILE: {}\nNumber of instructions exceed 128.".format(name))
+        f1.write("ERROR: FILE: {}\nNumber of instructions exceed 128.".format(name))
+        f1.close()
+        return True
+
+    # print(pcode)
+    
+    #VARIABLES AND CONVENTIONS RELATED ERRORS
+    # print(pcode)
+    j=0
+    variables=[]
+    while(lst_code[j][0]=="var"):
+        if(len(lst_code[j])!=2):
+            # print("ERROR: FILE: {}\n<line {}>: Illegal instruction for variable declaration.".format(name,lst_lines[j]))
+            f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction for variable declaration.".format(name,lst_lines[j]))
+            f1.close()
+            return True
+        if lst_code[j][1][0].isdigit()==True:
+            # print("ERROR: FILE: {}\n<line {}>: Illegal variable name.".format(name,lst_lines[j]))
+            f1.write("ERROR: FILE: {}\n<line {}>: Illegal variable name.".format(name,lst_lines[j]))
+            f1.close()
+            return True
+        for k in lst_code[j][1]:
+            if (k.isalnum()==False and k!="_"):
+                # print("ERROR: FILE: {}\n<line {}>: Illegal variable name.".format(name,lst_lines[j]))
+                f1.write("ERROR: FILE: {}\n<line {}>: Illegal variable name.".format(name,lst_lines[j]))
+                f1.close()
+                return True
+        if(lst_code[j][1]) in variables:
+            # print("ERROR: FILE: {}\n<line {}>: Two or more variables cannot have the same name.".format(name,lst_lines[j]))
+            f1.write("ERROR: FILE: {}\n<line {}>: Two or more variables cannot have the same name.".format(name,lst_lines[j]))
+            f1.close()
+            return True
+        if lst_code[j][1] in INSTRUCTIONS:
+            # print("ERROR: FILE: {}\n<line {}>: Mnemonics of the instructions cannot be used as a variable name.".format(name,lst_lines[j]))
+            f1.write("ERROR: FILE: {}\n<line {}>: Mnemonics of the instructions cannot be used as a variable name.".format(name,lst_lines[j]))
+            f1.close()
+            return True
+        if lst_code[j][1] in REGISTERS:
+            # print("ERROR: FILE: {}\n<line {}>: Register names cannot be used as a variable name.".format(name,lst_lines[j]))
+            f1.write("ERROR: FILE: {}\n<line {}>: Register names cannot be used as a variable name.".format(name,lst_lines[j]))
+            f1.close()
+            return True
+
+        variables.append(lst_code[j][1])
+        # print(lst_code[j])
+        j+=1
+
+    k=j
+    while(k!=len(lst_code)):
+        if(lst_code[k][0]=="var"):
+            # print("ERROR: FILE: {}\n<line {}>: All variables should be declared in the beginning.".format(name,lst_lines[k]))
+            f1.write("ERROR: FILE: {}\n<line {}>: All variables should be declared in the beginning.".format(name,lst_lines[k]))
+            f1.close()
+            return True
+        k+=1
+    
+    # print(variables)
+
+    #LABELS NAME AND DUPLICACY RELATED ERRORS
+    # print(pcode)
+    labels={}
+    for i,j in pcode.items():
+        if j[0][-1]==":":
+            if(j[0][:-1] in variables):
+                # print("ERROR: FILE: {}\n<line {}>: Variables and labels cannot have the same name.".format(name,i))
+                f1.write("ERROR: FILE: {}\n<line {}>: Variables and labels cannot have the same name.".format(name,i))
+                f1.close()
+                return True
+            if j[0][0].isdigit()==True:
+                # print("ERROR: FILE: {}\n<line {}>: Illegal label name.".format(name,i))
+                f1.write("ERROR: FILE: {}\n<line {}>: Illegal label name.".format(name,i))
+                f1.close()
+                return True
+            for k in j[0][:-1]:
+                if (k.isalnum()==False and k!="_"):
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal label name.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal label name.".format(name,i))
+                    f1.close()
+                    return True
+
+            if j[0] in list(labels.values()):
+                # print("ERROR: FILE: {}\n<line {}>: Two or more labels cannot have the same name.".format(name,i))
+                f1.write("ERROR: FILE: {}\n<line {}>: Two or more labels cannot have the same name.".format(name,i))
+                f1.close()
+                return True
+
+            if j[0][:-1] in INSTRUCTIONS:
+                # print("ERROR: FILE: {}\n<line {}>: Mnemonics of the instructions cannot be used as a label name.".format(name,i))
+                f1.write("ERROR: FILE: {}\n<line {}>: Mnemonics of the instructions cannot be used as a label name.".format(name,i))
+                f1.close()
+                return True
+            if j[0][:-1] in REGISTERS:
+                # print("ERROR: FILE: {}\n<line {}>: Register names cannot be used as a label name.".format(name,i))
+                f1.write("ERROR: FILE: {}\n<line {}>: Register names cannot be used as a label name.".format(name,i))
+                f1.close()
+                return True
+                
+            labels[i]=j[0]
+    
+    # print(labels)
+    # print(variables)
+
+    #HALT STATEMENT RELATED ERRORS
+    for i in range(len(lst_code)-1):
+        # print(lst_code[i])
+        for j in lst_code[i]:
+            if(j=="hlt"):
+                # print("ERROR: FILE: {}\n<line {}>: Hlt not the last instruction.".format(name,lst_lines[i]))
+                f1.write("ERROR: FILE: {}\n<line {}>: Hlt not the last instruction.".format(name,lst_lines[i]))
+                f1.close()
+                return True
+    
+    for j in (lst_code[len(lst_code)-1][:-1]):
+        # print(j)
+        if(j=="hlt"):
+            # print("ERROR: FILE: {}\n<line {}>: Hlt not the last instruction.".format(name,lst_lines[-1]))
+            f1.write("ERROR: FILE: {}\n<line {}>: Hlt not the last instruction.".format(name,lst_lines[-1]))
+            f1.close()
+            return True
+    
+    if(lst_code[-1][-1]!="hlt"):
+        # print("ERROR: FILE: {}\n<line {}>: Missing hlt statement.".format(name,lst_lines[-1]))
+        f1.write("ERROR: FILE: {}\n<line {}>: Missing hlt statement.".format(name,lst_lines[-1]))
+        f1.close()
+        return True
+
+
+    #GENERAL INSTRUCTION ERRORS
+    # print(pcode)
+    for i,j in pcode.items():
+        if j[0] in labels.values():
+            if(len(j)==1):
+                continue
+            if(j[1] not in INSTRUCTIONS):
+                # print("ERROR: FILE: {}\n<line {}>: Illegal instruction name.".format(name,i))
+                f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction name.".format(name,i))
+                f1.close()
+                return True
+        else:
+            if(j[0] not in INSTRUCTIONS):
+                # print("ERROR: FILE: {}\n<line {}>: Illegal instruction name.".format(name,i))
+                f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction name.".format(name,i))
+                f1.close()
+                return True
+
+    #TYPE-A ERROR GENERATION
+    # print(pcode)
+    lst_A=[]
+    for i,j in pcode.items():
+        # print(i,j)
+        try:
+            if j[0] in labels.values():
+                if j[1] in TYPE_A:
+                    if len(j)!=5:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-A instruction".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-A instruction".format(name,i))
+                        f1.close()
+                        return True
+                    if "FLAGS" in j:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.close()
+                        return True
+                    if(j[2] not in REGISTERS or j[3] not in REGISTERS or j[4] not in REGISTERS):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-A instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-A instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    lst_A.append(j)
+
+            if j[0] in TYPE_A:
+                if len(j)!=4:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal Type-A instruction".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal Type-A instruction".format(name,i))
+                    f1.close()
+                    return True
+                if "FLAGS" in j:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.close()
+                        return True
+                if(j[1] not in REGISTERS or j[2] not in REGISTERS or j[3] not in REGISTERS):
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-A instruction.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-A instruction.".format(name,i))
+                    f1.close()
+                    return True
+                lst_A.append(j)                
+        except:
+            continue
+
+
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
