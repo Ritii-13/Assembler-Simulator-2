@@ -386,6 +386,111 @@ def errorgen(name,k):
         except:
             continue   
 
+    lst_C=[]
+    
+    # print(pcode)
+    for i,j in pcode.items():
+        try:
+            if j[0] in labels.values() and j[1]=="mov":
+                if len(j)!=4:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                    f1.close()
+                    return True 
+                if j[2]=="FLAGS":
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                    f1.close()
+                    return True 
+                if j[3][0]!="$" and j[3] not in REGISTERS:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                    f1.close()
+                    return True 
+                if j[3][0]=="$":
+                    if j[2] not in REGISTERS:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction for Type-B.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction for Type-B.".format(name,i))
+                        f1.close()
+                        return True 
+                    if j[3]=="$":
+                        # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True 
+                    for k in j[3][1:]:
+                        if k.isdigit()==False:
+                            # print("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
+                            f1.write("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
+                            f1.close()
+                            return True
+                    imm=int(j[3][1:])
+                    if(imm<0 or imm>127):
+                        # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    lst_B.append(j)
+                else:
+                    if j[3] not in REGISTERS or j[2] not in REGISTERS:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                        f1.close()
+                        return True
+                    lst_C.append(j)
+
+            if j[0]=="mov":
+                if len(j)!=3:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                    f1.close()
+                    return True 
+                if j[1]=="FLAGS":
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                    f1.close()
+                    return True 
+                if j[2][0]!="$" and j[2] not in REGISTERS:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                    f1.close()
+                    return True 
+                if j[2][0]=="$":
+                    if j[1] not in REGISTERS:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                        f1.close()
+                        return True 
+                    if j[2]=="$":
+                        # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True 
+                    for k in j[2][1:]:
+                        if k.isdigit()==False:
+                            # print("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
+                            f1.write("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
+                            f1.close()
+                            return True
+                    imm=int(j[2][1:])
+                    if(imm<0 or imm>127):
+                        # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    lst_B.append(j)
+                else:
+                    if j[2] not in REGISTERS or j[1] not in REGISTERS:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
+                        f1.close()
+                        return True
+                    lst_C.append(j)
+
+        except:
+            continue
+
+
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
