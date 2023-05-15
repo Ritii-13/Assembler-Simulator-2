@@ -612,6 +612,55 @@ def errorgen(name,k):
             continue
 
     # print(lst_D)
+    
+    #TYPE-E ERROR GENERATION
+    lst_E=[]
+    for i,j in pcode.items():
+        try:
+            if j[0] in labels.values():
+                if j[1] in TYPE_E:
+                    if len(j)!=3:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-E instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-E instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if j[2] in variables:
+                        # print("ERROR: FILE: {}\n<line {}>: Variables cannot be used as labels.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Variables cannot be used as labels.".format(name,i))
+                        f1.close()
+                        return True
+                    if(j[2]+":" not in labels.values()):
+                        # print("ERROR: FILE: {}\n<line {}>: Use of undefined labels.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Use of undefined labels.".format(name,i))
+                        f1.close()
+                        return True 
+                    lst_E.append(j)
+
+            if j[0] in TYPE_E:
+                if len(j)!=2:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-E instruction.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-E instruction.".format(name,i))
+                    f1.close()
+                    return True
+                if j[1] in variables:
+                    # print("ERROR: FILE: {}\n<line {}>: Variables cannot be used as labels.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Variables cannot be used as labels.".format(name,i))
+                    f1.close()
+                    return True
+                if(j[1]+":" not in labels.values()):
+                    # print("ERROR: FILE: {}\n<line {}>: Use of undefined labels.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Use of undefined labels.".format(name,i))
+                    f1.close()
+                    return True 
+                lst_E.append(j)
+
+        except:
+            continue
+
+    # print(lst_E)
+    # print(lst_A,"\n",lst_B,"\n",lst_C,"\n",lst_D,"\n",lst_E)
+
+    return False
 
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
