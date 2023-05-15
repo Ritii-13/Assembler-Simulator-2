@@ -835,13 +835,27 @@ def main():
                 except:
                     pass
 
-        # print(type_A)
+            # print(type_A)
             # print(type_B)
             # print(type_C)
             # print(type_D)
             # print(type_E)
             # print(type_F)
 
-            
+            for j in list(binary_code.values()):
+                # print(j,j in type_E)
+                if j in type_A:
+                    A(j,k+1)
+                elif j in type_B:
+                    B(j,k+1)
+                elif j in type_C:
+                    C(j,k+1)
+                elif j in type_D:
+                    D(j,k+1)
+                elif j in type_E:
+                    E(j,k+1)
+                elif j in type_F:
+                    F(j,k+1)
+        # print("------------------------------------------------------------------------\n")
+      
 main()
-
