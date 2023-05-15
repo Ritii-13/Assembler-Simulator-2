@@ -674,6 +674,17 @@ def A(i,j):
     f.write(s+"\n")
     f.close()
 
+def B(i,j):
+    f=open("output{}.txt".format(j),"a")
+    unused="0"
+    if(i[0] in list(labels_locations.values())):
+        s=(TYPE_B[i[1]]+unused+REGISTERS[i[2]]+binary(int(i[3][1::])))
+    else:
+        s=(TYPE_B[i[0]]+unused+REGISTERS[i[1]]+binary(int(i[2][1::])))
+    # print(s)
+    f.write(s+"\n")
+    f.close()
+
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
