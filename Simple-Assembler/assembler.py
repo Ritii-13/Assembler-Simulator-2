@@ -713,6 +713,25 @@ def D(i,j):
     f.write(s+"\n")
     f.close()
 
+def E(i,j):
+    # print(i[0],i[1])
+    f=open("output{}.txt".format(j),"a");
+    unused="0000"
+    if(i[0] in list(labels_locations.values())):
+        if(i[2] in list(variables_locations.values())):
+            s=(TYPE_E[i[1]]+unused+list(variables_locations.keys())[(list(variables_locations.values())).index(i[2])])
+        elif(i[2]+":" in list(labels_locations.values())):
+            s=(TYPE_E[i[1]]+unused+list(labels_locations.keys())[(list(labels_locations.values())).index(i[2]+":")])
+        
+    else:
+        if(i[1] in list(variables_locations.values())):
+            s=(TYPE_E[i[0]]+unused+list(variables_locations.keys())[(list(variables_locations.values())).index(i[1])])
+        elif(i[1]+":" in list(labels_locations.values())):
+            s=(TYPE_E[i[0]]+unused+list(labels_locations.keys())[(list(labels_locations.values())).index(i[1]+":")])
+    # print(s)
+    f.write(s+"\n")
+    f.close()
+
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
