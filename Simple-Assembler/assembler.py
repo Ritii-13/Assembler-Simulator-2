@@ -295,7 +295,96 @@ def errorgen(name,k):
                 lst_A.append(j)                
         except:
             continue
+    
+    #TYPE-B ERROR GENERATION
+    lst_B=[]
+    # print(pcode)
+    for i,j in pcode.items():
+        try:
+            if(j[0] in labels.values()):
+                if(j[1] in TYPE_B and j[1]!="mov"):
+                    if len(j)!=4:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if("FLAGS" in j):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.close()
+                        return True
+                    if(j[2] not in list(REGISTERS.keys())[:-1]):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if(j[3][0]!="$"):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if(j[3][0]=="$"):
+                        if(j[3]=="$"):
+                            # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                            f1.write("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                            f1.close()
+                            return True
+                        for k in j[3][1:]:
+                            if k.isdigit()==False:
+                                # print("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
+                                f1.write("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
+                                f1.close()
+                                return True
+                        imm=int(j[3][1:])
+                        if(imm<0 or imm>127):
+                            # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
+                            f1.write("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
+                            f1.close()
+                            return True
+                    lst_B.append(j)
 
+            if(j[0] in TYPE_B and j[0]!="mov"):
+                    if len(j)!=3:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if("FLAGS" in j):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.close()
+                        return True
+                    if(j[1] not in list(REGISTERS.keys())[:-1]):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if(j[2][0]!="$"):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if(j[2][0]=="$"):
+                        if(j[2]=="$"):
+                            # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                            f1.write("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                            f1.close()
+                            return True
+                        for k in j[2][1:]:
+                            if k.isdigit()==False:
+                                # print("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
+                                f1.write("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
+                                f1.close()
+                                return True
+                        imm=int(j[2][1:])
+                        if(imm<0 or imm>127):
+                            # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
+                            f1.write("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
+                            f1.close()
+                            return True
+                    lst_B.append(j)
+        except:
+            continue   
 
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
