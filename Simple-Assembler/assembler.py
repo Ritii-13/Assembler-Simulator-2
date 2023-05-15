@@ -490,6 +490,52 @@ def errorgen(name,k):
         except:
             continue
 
+    # print(lst_C)
+    #TYPE-C ERROR GENERATION
+    # print(pcode)
+    for i,j in pcode.items():
+        try:
+            if j[0] in labels.values():
+                if j[1] in TYPE_C and j[1]!="mov":
+                    if len(j)!=4:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-C instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-C instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    if j[2]=="FLAGS" or j[3]=="FLAGS":
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        f1.close()
+                        return True
+                    if j[2] not in REGISTERS or j[3] not in REGISTERS:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal register name in Type-C instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal register name in Type-C instruction.".format(name,i))
+                        f1.close()
+                        return True
+                    lst_C.append(j)
+
+            if j[0] in TYPE_C and j[0]!="mov":
+                if len(j)!=3:
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-C instruction.".format(name,i))
+                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-C instruction.".format(name,i))
+                        f1.close()
+                        return True
+                if j[1]=="FLAGS" or j[2]=="FLAGS":
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                    f1.close()
+                    return True
+                if j[1] not in REGISTERS or j[2] not in REGISTERS:
+                    # print("ERROR: FILE: {}\n<line {}>: Illegal register name in Type-C instruction.".format(name,i))
+                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal register name in Type-C instruction.".format(name,i))
+                    f1.close()
+                    return True
+                lst_C.append(j)
+
+        except:
+            continue
+        
+    # print(lst_C)
 
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
