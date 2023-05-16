@@ -6,7 +6,7 @@
 
 Computer Organization - CSE112 Winter semester 2023 Project
 
-Project Guidlines:
+Project Guidlines: (This submission (15 May 2023) consists of just the assembler.)
 
 This project consists of 4 parts
 1. Designing and Implementing the assembler.
@@ -17,9 +17,11 @@ This project consists of 4 parts
 
 A. ASSEMBLER
 
-The assembler.py file consists of the code for the assembler.
-The assembler reads assembly program as an input text file and generates the binary as an output text file. 
-In case of any error, the error is generated with the line number in which error has been encountered.
+The main.py file in "Simple-Assembler" folder consists of the code for the assembler. The assembler follows the virtual ISA given in the 
+assignment.
+The assembler reads from stdin and outputs to stdout.
+Go to the automated-testing folder and run the command "./run --no-sim" to evaluate the assemebler.
 
-Add the path of the test case in the textfile list for getting the require "output.txt" files.
-We have added some sample test cases to test the functioning of the code.
+
+CREDITS:
+All the members of the group has equally contributed to the making of this code.
