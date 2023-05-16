@@ -1,3 +1,5 @@
+import sys
+
 def binary(n):
     s=""
     y=n
@@ -9,10 +11,7 @@ def binary(n):
         s="0"+s
     return s
 
-def return_code(name):
-    f1=open("{}".format(name),"r")
-    x=f1.read().split("\n")
-    # print(x)
+def return_code():
     for i in range(len(x)):
         x[i]=x[i].strip()
     x_copy=x.copy()
@@ -27,7 +26,6 @@ def return_code(name):
     for i in range(len(x)):
         dict_of_code[i+1]=x[i]
     # print(dict_of_code)
-    f1.close()
     binary_instructions={}
     count=0
     for i,j in dict_of_code.items():
@@ -40,10 +38,7 @@ def return_code(name):
     # print(bin_dict_of_code)
     return dict_of_code,bin_dict_of_code
 
-def return_variableloc(name):
-    f=open("{}".format(name),"r")
-    x=list(return_code(name)[0].values())
-    # print(x)
+def return_variableloc():
     vars_dict={}
     vars_list=[]
     labels_dict={}
@@ -67,17 +62,19 @@ def return_variableloc(name):
     return vars_dict,labels_dict
 
 
-def errorgen(name,k):
-    f1=open("output{}.txt".format(k),"a")
+def errorgen(x1):
+    # print(x1)
+    # f1=open("output{}.txt".format(k),"a")
     pcode={}
-    errcode={}
-    fullcode={}
-    f=open("{}".format(name),"r")
-    x=f.read().split("\n")
-    for i in range(len(x)):
-        x[i]=x[i].strip()
-    z=x.copy()
-    # print(z)
+    # errcode={}
+    # fullcode={}
+    # # f=open("{}".format(name),"r")
+    # # x=f.read().split("\n")
+    for i in range(len(x1)):
+        x1[i]=x1[i].strip()
+    # print(x1)
+    z=x1.copy()
+    # # print(z)
     for i in range(len(z)):
         z[i]=z[i].split()
     # print(z)
@@ -91,62 +88,39 @@ def errorgen(name,k):
             continue
         pcode[i+1]=z[i]
     # print(pcode)
-    # y=x.copy()
-    # for i in range(len(y)):
-    #     if(y[i]==""):
-    #         x.remove("")
-    # for i in range(len(x)):
-    #     x[i]=x[i].split()
-    # # print(x)
-    # for i in range(len(x)):
-    #     pcode[i+1]=x[i]
-    # print(pcode)
     lst_lines=list(pcode.keys())
     lst_code=list(pcode.values())
     # print(lst_lines,"\n",lst_code)
     if(len(lst_code)>128):
-        # print("ERROR: FILE: {}\nNumber of instructions exceed 128.".format(name))
-        f1.write("ERROR: FILE: {}\nNumber of instructions exceed 128.".format(name))
-        f1.close()
+        sys.stdout.write("ERROR: Number of instructions exceed 128.")
         return True
 
-    # print(pcode)
+#     # print(pcode)
     
-    #VARIABLES AND CONVENTIONS RELATED ERRORS
-    # print(pcode)
+#     #VARIABLES AND CONVENTIONS RELATED ERRORS
+#     # print(pcode)
+    # print(lst_code)
     j=0
     variables=[]
-    while(lst_code[j][0]=="var"):
+    while(j<len(lst_code) and lst_code[j][0]=="var"):
         if(len(lst_code[j])!=2):
-            # print("ERROR: FILE: {}\n<line {}>: Illegal instruction for variable declaration.".format(name,lst_lines[j]))
-            f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction for variable declaration.".format(name,lst_lines[j]))
-            f1.close()
+            sys.stdout.write("ERROR: <line {}>: Illegal instruction for variable declaration.".format(lst_lines[j]))
             return True
         if lst_code[j][1][0].isdigit()==True:
-            # print("ERROR: FILE: {}\n<line {}>: Illegal variable name.".format(name,lst_lines[j]))
-            f1.write("ERROR: FILE: {}\n<line {}>: Illegal variable name.".format(name,lst_lines[j]))
-            f1.close()
+            sys.stdout.write("ERROR: <line {}>: Illegal variable name.".format(lst_lines[j]))
             return True
         for k in lst_code[j][1]:
             if (k.isalnum()==False and k!="_"):
-                # print("ERROR: FILE: {}\n<line {}>: Illegal variable name.".format(name,lst_lines[j]))
-                f1.write("ERROR: FILE: {}\n<line {}>: Illegal variable name.".format(name,lst_lines[j]))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Illegal variable name.".format(lst_lines[j]))
                 return True
         if(lst_code[j][1]) in variables:
-            # print("ERROR: FILE: {}\n<line {}>: Two or more variables cannot have the same name.".format(name,lst_lines[j]))
-            f1.write("ERROR: FILE: {}\n<line {}>: Two or more variables cannot have the same name.".format(name,lst_lines[j]))
-            f1.close()
+            sys.stdout.write("ERROR: <line {}>: Two or more variables cannot have the same name.".format(lst_lines[j]))
             return True
         if lst_code[j][1] in INSTRUCTIONS:
-            # print("ERROR: FILE: {}\n<line {}>: Mnemonics of the instructions cannot be used as a variable name.".format(name,lst_lines[j]))
-            f1.write("ERROR: FILE: {}\n<line {}>: Mnemonics of the instructions cannot be used as a variable name.".format(name,lst_lines[j]))
-            f1.close()
+            sys.stdout.write("ERROR: <line {}>: Mnemonics of the instructions cannot be used as a variable name.".format(lst_lines[j]))
             return True
         if lst_code[j][1] in REGISTERS:
-            # print("ERROR: FILE: {}\n<line {}>: Register names cannot be used as a variable name.".format(name,lst_lines[j]))
-            f1.write("ERROR: FILE: {}\n<line {}>: Register names cannot be used as a variable name.".format(name,lst_lines[j]))
-            f1.close()
+            sys.stdout.write("ERROR: <line {}>: Register names cannot be used as a variable name.".format(lst_lines[j]))
             return True
 
         variables.append(lst_code[j][1])
@@ -156,9 +130,7 @@ def errorgen(name,k):
     k=j
     while(k!=len(lst_code)):
         if(lst_code[k][0]=="var"):
-            # print("ERROR: FILE: {}\n<line {}>: All variables should be declared in the beginning.".format(name,lst_lines[k]))
-            f1.write("ERROR: FILE: {}\n<line {}>: All variables should be declared in the beginning.".format(name,lst_lines[k]))
-            f1.close()
+            sys.stdout.write("ERROR: <line {}>: All variables should be declared in the beginning.".format(lst_lines[k]))
             return True
         k+=1
     
@@ -170,39 +142,27 @@ def errorgen(name,k):
     for i,j in pcode.items():
         if j[0][-1]==":":
             if(j[0][:-1] in variables):
-                # print("ERROR: FILE: {}\n<line {}>: Variables and labels cannot have the same name.".format(name,i))
-                f1.write("ERROR: FILE: {}\n<line {}>: Variables and labels cannot have the same name.".format(name,i))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Variables and labels cannot have the same name.".format(i))
                 return True
             if j[0][0].isdigit()==True:
-                # print("ERROR: FILE: {}\n<line {}>: Illegal label name.".format(name,i))
-                f1.write("ERROR: FILE: {}\n<line {}>: Illegal label name.".format(name,i))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Illegal label name.".format(i))
                 return True
             for k in j[0][:-1]:
                 if (k.isalnum()==False and k!="_"):
-                    # print("ERROR: FILE: {}\n<line {}>: Illegal label name.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal label name.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal label name.".format(i))
                     return True
 
             if j[0] in list(labels.values()):
-                # print("ERROR: FILE: {}\n<line {}>: Two or more labels cannot have the same name.".format(name,i))
-                f1.write("ERROR: FILE: {}\n<line {}>: Two or more labels cannot have the same name.".format(name,i))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Two or more labels cannot have the same name.".format(i))
                 return True
 
             if j[0][:-1] in INSTRUCTIONS:
-                # print("ERROR: FILE: {}\n<line {}>: Mnemonics of the instructions cannot be used as a label name.".format(name,i))
-                f1.write("ERROR: FILE: {}\n<line {}>: Mnemonics of the instructions cannot be used as a label name.".format(name,i))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Mnemonics of the instructions cannot be used as a label name.".format(i))
                 return True
             if j[0][:-1] in REGISTERS:
-                # print("ERROR: FILE: {}\n<line {}>: Register names cannot be used as a label name.".format(name,i))
-                f1.write("ERROR: FILE: {}\n<line {}>: Register names cannot be used as a label name.".format(name,i))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Register names cannot be used as a label name.".format(i))
                 return True
-                
+        
             labels[i]=j[0]
     
     # print(labels)
@@ -213,25 +173,19 @@ def errorgen(name,k):
         # print(lst_code[i])
         for j in lst_code[i]:
             if(j=="hlt"):
-                # print("ERROR: FILE: {}\n<line {}>: Hlt not the last instruction.".format(name,lst_lines[i]))
-                f1.write("ERROR: FILE: {}\n<line {}>: Hlt not the last instruction.".format(name,lst_lines[i]))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Hlt not the last instruction.".format(lst_lines[i]))
+
                 return True
     
     for j in (lst_code[len(lst_code)-1][:-1]):
         # print(j)
         if(j=="hlt"):
-            # print("ERROR: FILE: {}\n<line {}>: Hlt not the last instruction.".format(name,lst_lines[-1]))
-            f1.write("ERROR: FILE: {}\n<line {}>: Hlt not the last instruction.".format(name,lst_lines[-1]))
-            f1.close()
+            sys.stdout.write("ERROR: <line {}>: Hlt not the last instruction.".format(lst_lines[-1]))
             return True
     
     if(lst_code[-1][-1]!="hlt"):
-        # print("ERROR: FILE: {}\n<line {}>: Missing hlt statement.".format(name,lst_lines[-1]))
-        f1.write("ERROR: FILE: {}\n<line {}>: Missing hlt statement.".format(name,lst_lines[-1]))
-        f1.close()
+        sys.stdout.write("ERROR: <line {}>: Missing hlt statement.".format(lst_lines[-1]))
         return True
-
 
     #GENERAL INSTRUCTION ERRORS
     # print(pcode)
@@ -240,15 +194,12 @@ def errorgen(name,k):
             if(len(j)==1):
                 continue
             if(j[1] not in INSTRUCTIONS):
-                # print("ERROR: FILE: {}\n<line {}>: Illegal instruction name.".format(name,i))
-                f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction name.".format(name,i))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Illegal instruction name.".format(i))
+            
                 return True
         else:
             if(j[0] not in INSTRUCTIONS):
-                # print("ERROR: FILE: {}\n<line {}>: Illegal instruction name.".format(name,i))
-                f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction name.".format(name,i))
-                f1.close()
+                sys.stdout.write("ERROR: <line {}>: Illegal instruction name.".format(i))
                 return True
 
     #TYPE-A ERROR GENERATION
@@ -260,42 +211,34 @@ def errorgen(name,k):
             if j[0] in labels.values():
                 if j[1] in TYPE_A:
                     if len(j)!=5:
-                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-A instruction".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-A instruction".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-A instruction".format(i))
+                    
                         return True
                     if "FLAGS" in j:
-                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
+                    
                         return True
                     if(j[2] not in REGISTERS or j[3] not in REGISTERS or j[4] not in REGISTERS):
-                        # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-A instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-A instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal Register name in Type-A instruction.".format(i))
+                    
                         return True
                     lst_A.append(j)
 
             if j[0] in TYPE_A:
                 if len(j)!=4:
-                    # print("ERROR: FILE: {}\n<line {}>: Illegal Type-A instruction".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal Type-A instruction".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal Type-A instruction".format(i))
+                
                     return True
                 if "FLAGS" in j:
-                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))  
                         return True
                 if(j[1] not in REGISTERS or j[2] not in REGISTERS or j[3] not in REGISTERS):
-                    # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-A instruction.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-A instruction.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal Register name in Type-A instruction.".format(i))
                     return True
                 lst_A.append(j)                
         except:
             continue
-    
+        
     #TYPE-B ERROR GENERATION
     lst_B=[]
     # print(pcode)
@@ -304,88 +247,73 @@ def errorgen(name,k):
             if(j[0] in labels.values()):
                 if(j[1] in TYPE_B and j[1]!="mov"):
                     if len(j)!=4:
-                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-B instruction.".format(i))
                         return True
                     if("FLAGS" in j):
                         # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
                         return True
                     if(j[2] not in list(REGISTERS.keys())[:-1]):
                         # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal Register name in Type-B instruction.".format(i))  
                         return True
                     if(j[3][0]!="$"):
                         # print("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal syntax for immediate value in Type-B instruction.".format(i))
                         return True
                     if(j[3][0]=="$"):
                         if(j[3]=="$"):
                             # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
-                            f1.write("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
-                            f1.close()
+                            sys.stdout.write("ERROR: <line {}>: No immediate value given in Type-B instruction.".format(i))
                             return True
                         for k in j[3][1:]:
                             if k.isdigit()==False:
                                 # print("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
-                                f1.write("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
-                                f1.close()
+                                sys.stdout.write("ERROR: <line {}>: Illegal immediate value in Type-B instruction.".format(i))
                                 return True
                         imm=int(j[3][1:])
                         if(imm<0 or imm>127):
                             # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
-                            f1.write("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
-                            f1.close()
+                            sys.stdout.write("ERROR: <line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(i))
                             return True
                     lst_B.append(j)
 
             if(j[0] in TYPE_B and j[0]!="mov"):
                     if len(j)!=3:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-B instruction.".format(i))
                         return True
                     if("FLAGS" in j):
                         # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
                         return True
                     if(j[1] not in list(REGISTERS.keys())[:-1]):
                         # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal Register name in Type-B instruction.".format(i))
                         return True
                     if(j[2][0]!="$"):
                         # print("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal syntax for immediate value in Type-B instruction.".format(i))
                         return True
                     if(j[2][0]=="$"):
                         if(j[2]=="$"):
                             # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
-                            f1.write("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
-                            f1.close()
+                            sys.stdout.write("ERROR: <line {}>: No immediate value given in Type-B instruction.".format(i))
                             return True
                         for k in j[2][1:]:
                             if k.isdigit()==False:
                                 # print("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
-                                f1.write("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
-                                f1.close()
+                                sys.stdout.write("ERROR: <line {}>: Illegal immediate value in Type-B instruction.".format(i))
                                 return True
                         imm=int(j[2][1:])
                         if(imm<0 or imm>127):
                             # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
-                            f1.write("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
-                            f1.close()
+                            sys.stdout.write("ERROR: <line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(i))
                             return True
                     lst_B.append(j)
         except:
-            continue   
-
+            continue
+        
     lst_C=[]
     
     # print(pcode)
@@ -394,102 +322,85 @@ def errorgen(name,k):
             if j[0] in labels.values() and j[1]=="mov":
                 if len(j)!=4:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal instruction format.".format(i))
                     return True 
                 if j[2]=="FLAGS":
                     # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
                     return True 
                 if j[3][0]!="$" and j[3] not in REGISTERS:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal instruction format.".format(i))
                     return True 
                 if j[3][0]=="$":
                     if j[2] not in REGISTERS:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction for Type-B.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction for Type-B.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction for Type-B.".format(i))
                         return True 
                     if j[3]=="$":
                         # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: No immediate value given in Type-B instruction.".format(i))
                         return True 
                     for k in j[3][1:]:
                         if k.isdigit()==False:
                             # print("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
-                            f1.write("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
-                            f1.close()
+                            sys.stdout.write("ERROR: <line {}>: Illegal immediate value in Type-B instruction.".format(i))
                             return True
                     imm=int(j[3][1:])
                     if(imm<0 or imm>127):
                         # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(i))
                         return True
                     lst_B.append(j)
                 else:
                     if j[3] not in REGISTERS or j[2] not in REGISTERS:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format.".format(i))   
                         return True
                     lst_C.append(j)
 
             if j[0]=="mov":
                 if len(j)!=3:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal instruction format.".format(i))    
                     return True 
                 if j[1]=="FLAGS":
                     # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
                     return True 
                 if j[2][0]!="$" and j[2] not in REGISTERS:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal instruction format.".format(i))
                     return True 
                 if j[2][0]=="$":
                     if j[1] not in REGISTERS:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format.".format(i))
                         return True 
                     if j[2]=="$":
                         # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: No immediate value given in Type-B instruction.".format(i))
                         return True 
                     for k in j[2][1:]:
                         if k.isdigit()==False:
                             # print("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
-                            f1.write("ERROR: FILE: {}\n<line {}>: Illegal immediate value in Type-B instruction.".format(name,i))
-                            f1.close()
+                            sys.stdout.write("ERROR: <line {}>: Illegal immediate value in Type-B instruction.".format(i))
                             return True
                     imm=int(j[2][1:])
                     if(imm<0 or imm>127):
                         # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(i))      
                         return True
                     lst_B.append(j)
                 else:
                     if j[2] not in REGISTERS or j[1] not in REGISTERS:
-                        # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format.".format(i))  
                         return True
                     lst_C.append(j)
 
         except:
             continue
-
+        
     # print(lst_C)
     #TYPE-C ERROR GENERATION
     # print(pcode)
@@ -499,43 +410,43 @@ def errorgen(name,k):
                 if j[1] in TYPE_C and j[1]!="mov":
                     if len(j)!=4:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-C instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-C instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-C instruction.".format(i))
+                    
                         return True
                     if j[2]=="FLAGS" or j[3]=="FLAGS":
                         # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
+                    
                         return True
                     if j[2] not in REGISTERS or j[3] not in REGISTERS:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal register name in Type-C instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal register name in Type-C instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal register name in Type-C instruction.".format(i))
+                    
                         return True
                     lst_C.append(j)
 
             if j[0] in TYPE_C and j[0]!="mov":
                 if len(j)!=3:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-C instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-C instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-C instruction.".format(i))
+                    
                         return True
                 if j[1]=="FLAGS" or j[2]=="FLAGS":
                     # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
+                
                     return True
                 if j[1] not in REGISTERS or j[2] not in REGISTERS:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal register name in Type-C instruction.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal register name in Type-C instruction.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal register name in Type-C instruction.".format(i))
+                
                     return True
                 lst_C.append(j)
 
         except:
             continue
         
-    # print(lst_C)
+    # print(lst_C)
 
     #TYPE-D ERROR GENERATION
     lst_D=[]
@@ -545,66 +456,66 @@ def errorgen(name,k):
                 if j[1] in TYPE_D:
                     if len(j)!=4:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-D instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-D instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-D instruction.".format(i))
+                    
                         return True
                     if "FLAGS" in j:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
+                    
                         return True    
                     if j[2] not in REGISTERS:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal register name for Type-D instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal register name for Type-D instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal register name for Type-D instruction.".format(i))
+                    
                         return True
                     if (j[3]+":" in labels.values()):
                         # print("ERROR: FILE: {}\n<line {}>: Labels cannot be used as variables.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Labels cannot be used as variables.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Labels cannot be used as variables.".format(i))
+                    
                         return True
                     if j[3].isdigit()==True:
                         # print("ERROR: FILE: {}\n<line {}>: Numerical value cannot be interpreted as a variable.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Numerical value cannot be interpreted as a variable.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Numerical value cannot be interpreted as a variable.".format(i))
+                    
                         return True
                     if j[3] not in variables:
                         # print("ERROR: FILE: {}\n<line {}>: Use of undefined variable.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Use of undefined variable.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Use of undefined variable.".format(i))
+                    
                         return True
                     lst_D.append(j)
                 
             if j[0] in TYPE_D:
                 if len(j)!=3:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-D instruction.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-D instruction.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-D instruction.".format(i))
+                
                     return True
                 if "FLAGS" in j:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
+                
                     return True    
                 if j[1] not in REGISTERS:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal register name for Type-D instruction.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal register name for Type-D instruction.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal register name for Type-D instruction.".format(i))
+                
                     return True
                 if (j[2]+":" in labels.values()):
                     # print("ERROR: FILE: {}\n<line {}>: Labels cannot be used as variables.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Labels cannot be used as variables.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Labels cannot be used as variables.".format(i))
+                
                     return True
                 if j[2].isdigit()==True:
                     # print("ERROR: FILE: {}\n<line {}>: Numerical value cannot be interpreted as a variable.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Numerical value cannot be interpreted as a variable.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Numerical value cannot be interpreted as a variable.".format(i))
+                
                     return True
                 if j[2] not in variables:
                     # print("ERROR: FILE: {}\n<line {}>: Use of undefined variable.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Use of undefined variable.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Use of undefined variable.".format(i))
+                
                     return True
                 lst_D.append(j)
         
@@ -612,7 +523,7 @@ def errorgen(name,k):
             continue
 
     # print(lst_D)
-    
+
     #TYPE-E ERROR GENERATION
     lst_E=[]
     for i,j in pcode.items():
@@ -621,36 +532,36 @@ def errorgen(name,k):
                 if j[1] in TYPE_E:
                     if len(j)!=3:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-E instruction.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-E instruction.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-E instruction.".format(i))
+                    
                         return True
                     if j[2] in variables:
                         # print("ERROR: FILE: {}\n<line {}>: Variables cannot be used as labels.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Variables cannot be used as labels.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Variables cannot be used as labels.".format(i))
+                    
                         return True
                     if(j[2]+":" not in labels.values()):
                         # print("ERROR: FILE: {}\n<line {}>: Use of undefined labels.".format(name,i))
-                        f1.write("ERROR: FILE: {}\n<line {}>: Use of undefined labels.".format(name,i))
-                        f1.close()
+                        sys.stdout.write("ERROR: <line {}>: Use of undefined labels.".format(i))
+                    
                         return True 
                     lst_E.append(j)
 
             if j[0] in TYPE_E:
                 if len(j)!=2:
                     # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-E instruction.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-E instruction.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-E instruction.".format(i))
+                
                     return True
                 if j[1] in variables:
                     # print("ERROR: FILE: {}\n<line {}>: Variables cannot be used as labels.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Variables cannot be used as labels.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Variables cannot be used as labels.".format(i))
+                
                     return True
                 if(j[1]+":" not in labels.values()):
                     # print("ERROR: FILE: {}\n<line {}>: Use of undefined labels.".format(name,i))
-                    f1.write("ERROR: FILE: {}\n<line {}>: Use of undefined labels.".format(name,i))
-                    f1.close()
+                    sys.stdout.write("ERROR: <line {}>: Use of undefined labels.".format(i))
+                
                     return True 
                 lst_E.append(j)
 
@@ -663,42 +574,42 @@ def errorgen(name,k):
     return False
 
 
-def A(i,j):
-    f=open("output{}.txt".format(j),"a")
+def A(i):
+    # f=open("output{}.txt".format(j),"a")
     unused="00"
     if(i[0] in list(labels_locations.values())):
         s=(TYPE_A[i[1]]+unused+REGISTERS[i[2]]+REGISTERS[i[3]]+REGISTERS[i[4]])
     else:
         s=(TYPE_A[i[0]]+unused+REGISTERS[i[1]]+REGISTERS[i[2]]+REGISTERS[i[3]])
     # print(s)
-    f.write(s+"\n")
-    f.close()
+    sys.stdout.write(s+"\n")
+    # f.close()
 
-def B(i,j):
-    f=open("output{}.txt".format(j),"a")
+def B(i):
+    # f=open("output{}.txt".format(j),"a")
     unused="0"
     if(i[0] in list(labels_locations.values())):
         s=(TYPE_B[i[1]]+unused+REGISTERS[i[2]]+binary(int(i[3][1::])))
     else:
         s=(TYPE_B[i[0]]+unused+REGISTERS[i[1]]+binary(int(i[2][1::])))
     # print(s)
-    f.write(s+"\n")
-    f.close()
+    sys.stdout.write(s+"\n")
+    # f.close()
 
-def C(i,j):
-    f=open("output{}.txt".format(j),"a");
+def C(i):
+    # f=open("output{}.txt".format(j),"a");
     unused="00000"
     if(i[0] in list(labels_locations.values())):
         s=(TYPE_C[i[1]]+unused+REGISTERS[i[2]]+REGISTERS[i[3]])
     else:
         s=(TYPE_C[i[0]]+unused+REGISTERS[i[1]]+REGISTERS[i[2]])
     # print(s)
-    f.write(s+"\n")
-    f.close()
+    sys.stdout.write(s+"\n")
+    # f.close()
 
-def D(i,j):
+def D(i):
     unused="0"
-    f=open("output{}.txt".format(j),"a");
+    # f=open("output{}.txt".format(j),"a");
     if(i[0] in list(labels_locations.values())):
         if(i[3] in list(variables_locations.values())):
             s=(TYPE_D[i[1]]+unused+REGISTERS[i[2]]+list(variables_locations.keys())[(list(variables_locations.values())).index(i[3])])
@@ -710,12 +621,12 @@ def D(i,j):
         elif(i[2]+":" in list(labels_locations.values())):
             s=(TYPE_D[i[0]]+unused+REGISTERS[i[1]]+list(labels_locations.keys())[(list(labels_locations.values())).index(i[2]+":")])
     # print(s)
-    f.write(s+"\n")
-    f.close()
+    sys.stdout.write(s+"\n")
+    # f.close()
 
-def E(i,j):
+def E(i):
     # print(i[0],i[1])
-    f=open("output{}.txt".format(j),"a");
+    # f=open("output{}.txt".format(j),"a")
     unused="0000"
     if(i[0] in list(labels_locations.values())):
         if(i[2] in list(variables_locations.values())):
@@ -729,26 +640,26 @@ def E(i,j):
         elif(i[1]+":" in list(labels_locations.values())):
             s=(TYPE_E[i[0]]+unused+list(labels_locations.keys())[(list(labels_locations.values())).index(i[1]+":")])
     # print(s)
-    f.write(s+"\n")
-    f.close()
+    sys.stdout.write(s+"\n")
+    # f.close()
 
-def F(i,j):
-    f=open("output{}.txt".format(j),"a");
+def F(i):
+    # f=open("output{}.txt".format(j),"a");
     unused="00000000000"
     if (i[0] in list(labels_locations.values())):
         s=(TYPE_F[i[1]]+unused)
     else:
         s=(TYPE_F[i[0]] + unused)
     # print(s)
-    f.write(s+"\n")
-    f.close()
+    sys.stdout.write(s+"\n")
+    
 
 
 def main():
     global R0,R1,R2,R3,R4,R5,R6,R7,FLAGS
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
     global type_D,type_E,type_F
-    
+    global x
     TYPE_A={"add":"00000","sub":"00001","mul":"00110","xor":"01010","or":"01011","and":"01100"}
     # type_A=[]
 
@@ -770,95 +681,87 @@ def main():
     INSTRUCTIONS= ['add','sub','mul','xor','or','and','rs','ls','mov','div','not','cmp','ld','st','jmp','jlt','jgt','je','hlt','var']
     REGISTERS={"R0":"000","R1":"001","R2":"010","R3":"011","R4":"100","R5":"101","R6":"110","FLAGS":"111"}
 
-    testcases=[r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase1.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase2.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase3.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase4.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase5.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase6.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase7.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase8.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase9.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase10.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase11.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase12.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase13.txt",r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase14.txt",
-    r"C:\Users\user\OneDrive\Desktop\DSA and C\Assembler-Simulator\Simple-Assembler\testcase15.txt"
-    ]
-    
-    for k in range(len(testcases)):
-        f1=open("output{}.txt".format(k+1),"w")
-        f1.close()
-        y=errorgen(testcases[k],k+1)
-        if(y==False):
-            program_code={}    # line and code
-            binary_code={}  #binary
-            variables_locations={} # memory for variables
-            labels_locations={} #labels
-            type_A=[]
-            type_B=[]
-            type_C=[]
-            type_D=[]
-            type_E=[]
-            type_F=[]
-            program_code,binary_code=return_code(testcases[k])
-            variables_locations,labels_locations=return_variableloc(testcases[k])
-            # print(program_code)
-            # # print()
-            # print(binary_code)
-            # # # print()
-            # print(variables_locations)
-            # print(labels_locations)     
-            # print(k,y)
-            for i in list(binary_code.values()):
-                # print(i)
-                try:
-                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_A and i[2] in REGISTERS and i[3] in REGISTERS and i[4] in REGISTERS and len(i)==5) or (i[0] in TYPE_A and i[1] in REGISTERS and i[2] in REGISTERS and i[3] in REGISTERS and len(i)==4)):
-                        type_A.append(i)
-                except:
-                    pass
-                try:
-                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_C and i[2] in REGISTERS and i[3] in REGISTERS and len(i)==4 )or (i[0] in TYPE_C and i[1] in REGISTERS and i[2] in REGISTERS and len(i)==3)):
-                        type_C.append(i)
-                except:
-                    pass
-                # print(i[0] in list(labels_locations.values()))
-                try:
-                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_F.keys()) or i[0] in TYPE_F or i[-1]=="hlt"):
-                        type_F.append(i)
-                except:
-                    pass
-                try:
-                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_D and i[2] in REGISTERS and (i[3] in list(variables_locations.values()) or i[3]+":" in list(labels_locations.values()))) and len(i)==4) or (i[0] in TYPE_D and i[1] in REGISTERS and (i[2]+":" in list(labels_locations.values()) or i[2] in list(variables_locations.values()))):
-                        type_D.append(i)
-                except:
-                    pass
-                try:
-                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_B and "$" in i[-1] and i[2] in REGISTERS)or (i[0] in TYPE_B and  i[1] in REGISTERS and "$" in i[-1])):
-                        type_B.append(i)
-                except:
-                    pass
-                try:
-                    if((i[0] in list(labels_locations.values()) and i[1] in TYPE_E and (i[2]+":" in list(labels_locations.values()) or i[2] in list(variables_locations.values() ))) or (i[0] in TYPE_E and (i[1]+":" in list(labels_locations.values()) or i[1] in list(variables_locations.values())))):
-                        type_E.append(i)
-                except:
-                    pass
+    x=sys.stdin.read().splitlines()
+    x1=x.copy()
+    # print(x1)
+    # for k in range(len(testcases)):
+    # f1=open("output.txt","w")
+    y=errorgen(x1)
+    if(y==False):
+        program_code={}    # line and code
+        binary_code={}  #binary
+        variables_locations={} # memory for variables
+        labels_locations={} #labels
+        type_A=[]
+        type_B=[]
+        type_C=[]
+        type_D=[]
+        type_E=[]
+        type_F=[]
+        program_code,binary_code=return_code()
+        variables_locations,labels_locations=return_variableloc()
+        # print(x)
+        # print(program_code)
+        # print()
+        # print(binary_code)
+        # # print()
+        # print(variables_locations)
+        # print(labels_locations)     
+        # print(k,y)
+        for i in list(binary_code.values()):
+            # print(i)
+            try:
+                if((i[0] in list(labels_locations.values()) and i[1] in TYPE_A and i[2] in REGISTERS and i[3] in REGISTERS and i[4] in REGISTERS and len(i)==5) or (i[0] in TYPE_A and i[1] in REGISTERS and i[2] in REGISTERS and i[3] in REGISTERS and len(i)==4)):
+                    type_A.append(i)
+            except:
+                pass
+            try:
+                if((i[0] in list(labels_locations.values()) and i[1] in TYPE_C and i[2] in REGISTERS and i[3] in REGISTERS and len(i)==4 )or (i[0] in TYPE_C and i[1] in REGISTERS and i[2] in REGISTERS and len(i)==3)):
+                    type_C.append(i)
+            except:
+                pass
+            # print(i[0] in list(labels_locations.values()))
+            try:
+                if((i[0] in list(labels_locations.values()) and i[1] in TYPE_F.keys()) or i[0] in TYPE_F or i[-1]=="hlt"):
+                    type_F.append(i)
+            except:
+                pass
+            try:
+                if((i[0] in list(labels_locations.values()) and i[1] in TYPE_D and i[2] in REGISTERS and (i[3] in list(variables_locations.values()) or i[3]+":" in list(labels_locations.values()))) and len(i)==4) or (i[0] in TYPE_D and i[1] in REGISTERS and (i[2]+":" in list(labels_locations.values()) or i[2] in list(variables_locations.values()))):
+                    type_D.append(i)
+            except:
+                pass
+            try:
+                if((i[0] in list(labels_locations.values()) and i[1] in TYPE_B and "$" in i[-1] and i[2] in REGISTERS)or (i[0] in TYPE_B and  i[1] in REGISTERS and "$" in i[-1])):
+                    type_B.append(i)
+            except:
+                pass
+            try:
+                if((i[0] in list(labels_locations.values()) and i[1] in TYPE_E and (i[2]+":" in list(labels_locations.values()) or i[2] in list(variables_locations.values() ))) or (i[0] in TYPE_E and (i[1]+":" in list(labels_locations.values()) or i[1] in list(variables_locations.values())))):
+                    type_E.append(i)
+            except:
+                pass
 
-            # print(type_A)
-            # print(type_B)
-            # print(type_C)
-            # print(type_D)
-            # print(type_E)
-            # print(type_F)
-
-            for j in list(binary_code.values()):
-                # print(j,j in type_E)
-                if j in type_A:
-                    A(j,k+1)
-                elif j in type_B:
-                    B(j,k+1)
-                elif j in type_C:
-                    C(j,k+1)
-                elif j in type_D:
-                    D(j,k+1)
-                elif j in type_E:
-                    E(j,k+1)
-                elif j in type_F:
-                    F(j,k+1)
-        # print("------------------------------------------------------------------------\n")
-      
+        # print(type_A)
+        # print(type_B)
+        # print(type_C)
+        # print(type_D)
+        # print(type_E)
+        # print(type_F)
+            
+        for j in list(binary_code.values()):
+            # print(j,j in type_E)
+            if j in type_A:
+                A(j)
+            elif j in type_B:
+                B(j)
+            elif j in type_C:
+                C(j)
+            elif j in type_D:
+                D(j)
+            elif j in type_E:
+                E(j)
+            elif j in type_F:
+                F(j)
+                
 main()
