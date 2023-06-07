@@ -34,25 +34,29 @@ The assembler and the simulator are modified to incorporate the floating point a
 
 D. BONUS QUESTION:
 The ISA is updated to handle five new instructions, whose descriptions are as follows.
-floating_multiply:       11110    mulf  reg1 reg2 reg3      TYPE-A        Performs reg1 = reg2 * reg3 for floating point.
+floating_multiply:     |  11110   | mulf  reg1 reg2 reg3   |   TYPE-A   |     Performs reg1 = reg2 * reg3 for floating point.
                                                                           if the result overflows, the overflow flag is set and value of reg1 is set to 0.
 
-multiply immediate:      11000    muli  reg1 $imm           TYPE-B        Performs reg1 = reg1 * $imm 
+multiply immediate:    |  11000    |muli  reg1 $imm        |   TYPE-B    |    Performs reg1 = reg1 * $imm 
                                                                           If the result overflows, the overflow flag is set and value of reg1 is set to 0.
 
-decriment immediate:     11001    decri reg1 $imm           TYPE-B        Performs reg1 = reg1 - $imm
+decriment immediate:   |  11001    |decri reg1 $imm        |   TYPE-B    |    Performs reg1 = reg1 - $imm
                                                                           if reg1 = 0, the oveflow flag is set.
 
-incriment immediate:     10111    incri reg1 $imm           TYPE-B        Performs reg1 = reg1 + $imm.
+incriment immediate:   |  10111    | incri reg1 $imm       |    TYPE-B    |    Performs reg1 = reg1 + $imm.
                                                                           If the result overflows, the overflow bit is set and value of reg1 is set to 0.
 
-power             :      11011    pow   reg1 reg2 reg3      TYPE-A        Performs reg1 = reg2 ^ reg3 
+power             :   |   11011    |pow   reg1 reg2 reg3    |  TYPE-A     |   Performs reg1 = reg2 ^ reg3 
                                                                           If the result overflows, the overflow flag is set and the value of reg1 is set to 0.
 
 mulf: mulf is a Type A instruction. Performs reg1 = reg2 * reg3
+
 muli: muli is a Type B instruction. Performs reg1 = reg1 * $Imm where Imm is a 7 bit value.
+
 decri: decri is a Type B instruction. Performs reg1 = reg1 - $Imm where Imm is a 7 bit value.
+
 incri: incri is a Type B instruction. Performs reg1 = reg1 + $Imm where Imm is a 7 bit value.
+
 pow: pow is a Type A instruction. Performs reg1 = reg2 ^ reg3
 
 
