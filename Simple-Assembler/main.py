@@ -1,5 +1,79 @@
 import sys
 
+def elt(s):
+    is_zero=True 
+    for i in s:
+        if i!='0':
+            is_zero=False 
+            break
+    if is_zero==False:
+        L=[]
+        for i in s:
+            L.append(i)
+        x=-1
+        while(L[x]!='1'):
+            L.pop()
+        y=""
+        for i in L:
+            y+=i 
+        return y
+    return ""
+
+def float_binary(num):
+    if(num<0):
+        return 'error'
+    ieee=""
+    res=""
+    integer=int(num)
+    dec=num-integer 
+    res+=bin(integer)[2:]+"."
+    y=""
+    while(dec!=0):
+        dec=dec*2
+        y+=str(int(dec))
+        dec=dec-int(dec)
+    if(y==""):
+        res+='0'
+    else:
+        res+=y
+    
+    # print(res)
+    
+    if(float(res)==0):
+        exp="000"
+        mt="00000"
+
+    elif(res[0:5]=="0.001"):
+        exp="000"
+        mt=res[4:]
+        mt=elt(mt)
+
+    else:
+        ind=res.index(".")
+        ind1=res.index("1")
+        if(ind<ind1):
+            expint=ind-ind1
+            mt=res[ind1+1:]
+        else:
+            expint=ind-ind1-1
+            mt=res[ind1+1:ind]+res[ind+1:]
+        # print(expint)
+        # print(mt)
+        mt=elt(mt)
+        # print(mt)
+        exp=expint+3 #bias 3
+        if(exp<0 or exp>6):
+            return 'error'
+        exp=format(exp,"003b")
+
+    if(len(mt)>5):
+        return 'error'
+    elif(len(mt)<5):
+        while(len(mt)!=5):
+            mt+="0"
+    ieee=exp+mt 
+    return ieee
+
 def binary(n):
     s=""
     y=n
@@ -212,15 +286,12 @@ def errorgen(x1):
                 if j[1] in TYPE_A:
                     if len(j)!=5:
                         sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-A instruction".format(i))
-                    
                         return True
                     if "FLAGS" in j:
                         sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
-                    
                         return True
                     if(j[2] not in REGISTERS or j[3] not in REGISTERS or j[4] not in REGISTERS):
                         sys.stdout.write("ERROR: <line {}>: Illegal Register name in Type-A instruction.".format(i))
-                    
                         return True
                     lst_A.append(j)
 
@@ -245,7 +316,7 @@ def errorgen(x1):
     for i,j in pcode.items():
         try:
             if(j[0] in labels.values()):
-                if(j[1] in TYPE_B and j[1]!="mov"):
+                if(j[1] in TYPE_B and j[1]!="mov" and j[1]!="movf"):
                     if len(j)!=4:
                         sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-B instruction.".format(i))
                         return True
@@ -277,8 +348,39 @@ def errorgen(x1):
                             sys.stdout.write("ERROR: <line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(i))
                             return True
                     lst_B.append(j)
+                
+                if(j[1] in TYPE_B and j[1]!="mov" and j[1]=="movf"):
+                    if len(j)!=4:
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-B instruction.".format(i))
+                        return True
+                    if("FLAGS" in j):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
+                        return True
+                    if(j[2] not in list(REGISTERS.keys())[:-1]):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
+                        sys.stdout.write("ERROR: <line {}>: Illegal Register name in Type-B instruction.".format(i))  
+                        return True
+                    if(j[3][0]!="$"):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
+                        sys.stdout.write("ERROR: <line {}>: Illegal syntax for immediate value in Type-B instruction.".format(i))
+                        return True
+                    if(j[3][0]=="$"):
+                        if(j[3]=="$"):
+                            # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                            sys.stdout.write("ERROR: <line {}>: No immediate value given in Type-B instruction.".format(i))
+                            return True
+                        try:
+                            t=float(j[3][1:])
+                        except:
+                            sys.stdout.write("ERROR: <line {}>: Illegal immediate value in Type-B instruction.".format(i))
+                            return True
+                        if(float_binary(t)=='error'):
+                            sys.stdout.write("ERROR: <line {}>: Immediate value cannot be represented in the given format.".format(i))
+                            return True
+                    lst_B.append(j)
 
-            if(j[0] in TYPE_B and j[0]!="mov"):
+            if(j[0] in TYPE_B and j[0]!="mov" and j[0]!="movf"):
                     if len(j)!=3:
                         # print("ERROR: FILE: {}\n<line {}>: Illegal instruction format for Type-B instruction.".format(name,i))
                         sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-B instruction.".format(i))
@@ -309,6 +411,37 @@ def errorgen(x1):
                         if(imm<0 or imm>127):
                             # print("ERROR: FILE: {}\n<line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(name,i))
                             sys.stdout.write("ERROR: <line {}>: Overflow immediate value(<0 or >127) in Type-B instruction.".format(i))
+                            return True
+                    lst_B.append(j)
+
+            if(j[0] in TYPE_B and j[0]!="mov" and j[0]=="movf"):
+                    if len(j)!=3:
+                        sys.stdout.write("ERROR: <line {}>: Illegal instruction format for Type-B instruction.".format(i))
+                        return True
+                    if("FLAGS" in j):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal use of FLAGS register.".format(name,i))
+                        sys.stdout.write("ERROR: <line {}>: Illegal use of FLAGS register.".format(i))
+                        return True
+                    if(j[1] not in list(REGISTERS.keys())[:-1]):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal Register name in Type-B instruction.".format(name,i))
+                        sys.stdout.write("ERROR: <line {}>: Illegal Register name in Type-B instruction.".format(i))  
+                        return True
+                    if(j[2][0]!="$"):
+                        # print("ERROR: FILE: {}\n<line {}>: Illegal syntax for immediate value in Type-B instruction.".format(name,i))
+                        sys.stdout.write("ERROR: <line {}>: Illegal syntax for immediate value in Type-B instruction.".format(i))
+                        return True
+                    if(j[2][0]=="$"):
+                        if(j[2]=="$"):
+                            # print("ERROR: FILE: {}\n<line {}>: No immediate value given in Type-B instruction.".format(name,i))
+                            sys.stdout.write("ERROR: <line {}>: No immediate value given in Type-B instruction.".format(i))
+                            return True
+                        try:
+                            t=float(j[2][1:])
+                        except:
+                            sys.stdout.write("ERROR: <line {}>: Illegal immediate value in Type-B instruction.".format(i))
+                            return True
+                        if(float_binary(t)=='error'):
+                            sys.stdout.write("ERROR: <line {}>: Immediate value cannot be represented in the given format.".format(i))
                             return True
                     lst_B.append(j)
         except:
@@ -589,9 +722,15 @@ def B(i):
     # f=open("output{}.txt".format(j),"a")
     unused="0"
     if(i[0] in list(labels_locations.values())):
-        s=(TYPE_B[i[1]]+unused+REGISTERS[i[2]]+binary(int(i[3][1::])))
+        if(TYPE_B[i[1]]!="10010"):
+            s=(TYPE_B[i[1]]+"0"+REGISTERS[i[2]]+binary(int(i[3][1::])))
+        else:
+            s=(TYPE_B[i[1]]+REGISTERS[i[2]]+float_binary(float(i[3][1:])))
     else:
-        s=(TYPE_B[i[0]]+unused+REGISTERS[i[1]]+binary(int(i[2][1::])))
+        if(TYPE_B[i[0]]!="10010"):
+            s=(TYPE_B[i[0]]+"0"+REGISTERS[i[1]]+binary(int(i[2][1::])))
+        else:
+            s=(TYPE_B[i[0]]+REGISTERS[i[1]]+float_binary(float(i[2][1:])))
     # print(s)
     sys.stdout.write(s+"\n")
     # f.close()
@@ -660,10 +799,10 @@ def main():
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
     global type_D,type_E,type_F
     global x
-    TYPE_A={"add":"00000","sub":"00001","mul":"00110","xor":"01010","or":"01011","and":"01100"}
+    TYPE_A={"add":"00000","sub":"00001","mul":"00110","xor":"01010","or":"01011","and":"01100","addf":"10000","subf":"10001"}
     # type_A=[]
 
-    TYPE_B={"mov":"00010","rs":"01000","ls":"01001"}
+    TYPE_B={"mov":"00010","rs":"01000","ls":"01001","movf":"10010"}
     # type_B=[]
 
     TYPE_C={"mov":"00011","div":"00111","not":"01101","cmp":"01110"}
@@ -678,7 +817,7 @@ def main():
     TYPE_F={"hlt":"11010"}
     # type_F=[]
 
-    INSTRUCTIONS= ['add','sub','mul','xor','or','and','rs','ls','mov','div','not','cmp','ld','st','jmp','jlt','jgt','je','hlt','var']
+    INSTRUCTIONS= ['add','sub','mul','xor','or','and','rs','ls','mov','div','not','cmp','ld','st','jmp','jlt','jgt','je','hlt','var','addf','subf','movf']
     REGISTERS={"R0":"000","R1":"001","R2":"010","R3":"011","R4":"100","R5":"101","R6":"110","FLAGS":"111"}
 
     x=sys.stdin.read().splitlines()
