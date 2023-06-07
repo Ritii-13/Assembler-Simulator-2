@@ -799,10 +799,10 @@ def main():
     global REGISTERS,INSTRUCTIONS,variables_locations,labels_locations,TYPE_A,TYPE_B,TYPE_C,TYPE_D,TYPE_E,TYPE_F,type_A,type_B,type_C
     global type_D,type_E,type_F
     global x
-    TYPE_A={"add":"00000","sub":"00001","mul":"00110","xor":"01010","or":"01011","and":"01100","addf":"10000","subf":"10001"}
+    TYPE_A={"add":"00000","sub":"00001","mul":"00110","xor":"01010","or":"01011","and":"01100","addf":"10000","subf":"10001","mulf":"11110","pow":"11011"}
     # type_A=[]
 
-    TYPE_B={"mov":"00010","rs":"01000","ls":"01001","movf":"10010"}
+    TYPE_B={"mov":"00010","rs":"01000","ls":"01001","movf":"10010","muli":"11000","decri":"11001","incri":"10111"}
     # type_B=[]
 
     TYPE_C={"mov":"00011","div":"00111","not":"01101","cmp":"01110"}
@@ -817,7 +817,7 @@ def main():
     TYPE_F={"hlt":"11010"}
     # type_F=[]
 
-    INSTRUCTIONS= ['add','sub','mul','xor','or','and','rs','ls','mov','div','not','cmp','ld','st','jmp','jlt','jgt','je','hlt','var','addf','subf','movf']
+    INSTRUCTIONS= ['add','sub','mul','xor','or','and','rs','ls','mov','div','not','cmp','ld','st','jmp','jlt','jgt','je','hlt','var','addf','subf','movf','mulf','pow','muli','decri','incri']
     REGISTERS={"R0":"000","R1":"001","R2":"010","R3":"011","R4":"100","R5":"101","R6":"110","FLAGS":"111"}
 
     x=sys.stdin.read().splitlines()
